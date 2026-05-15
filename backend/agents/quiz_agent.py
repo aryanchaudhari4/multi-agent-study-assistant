@@ -1,28 +1,28 @@
-from google import genai
+from openai import OpenAI
 from config import settings
 
-client = genai.Client(api_key=settings.gemini_api_key)
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=settings.gemini_api_key,
+)
 
 SYSTEM_PROMPT = """You are a Quiz Agent — you generate educational quiz questions for students.
 - For MCQs always use this exact format:
   Q: [question]
-  A) [option]
-  B) [option]
-  C) [option]
-  D) [option]
+  A) [option]  B) [option]  C) [option]  D) [option]
   Answer: [letter]
   Explanation: [brief explanation]
-- Generate 1-3 questions per response unless asked for more
-- After the student answers, give feedback and explain the correct answer"""
+- Generate 1-3 questions per response
+- After the student answers, give feedback"""
 
 async def chat(messages: list, user_message: str) -> str:
-    history = ""
+    all_messages = [{"role": "system", "content": SYSTEM_PROMPT}]
     for msg in messages:
-        role = "Student" if msg["role"] == "user" else "You"
-        history += f"{role}: {msg['content']}\n"
-    full_prompt = f"{SYSTEM_PROMPT}\n\nConversation so far:\n{history}\nStudent: {user_message}\nYou:"
-    response = client.models.generate_content(
-        model="gemini-2.0-flash-lite",
-        contents=full_prompt
+        all_messages.append({"role": msg["role"], "content": msg["content"]})
+    all_messages.append({"role": "user", "content": user_message})
+    response = client.chat.completions.create(
+        model="openrouter/auto",
+        messages=all_messages,
+        max_tokens=1000
     )
-    return response.text
+    return response.choices[0].message.content
