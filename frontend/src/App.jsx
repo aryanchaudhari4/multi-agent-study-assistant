@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Login from './pages/Login'
 import Home from './pages/Home'
 import useUserStore from './store/userStore'
+import { useState, useEffect } from 'react'
 
 function ProtectedRoute({ children }) {
   const { token } = useUserStore()
@@ -10,6 +11,12 @@ function ProtectedRoute({ children }) {
 }
 
 export default function App() {
+  const [dark, setDark] = useState(true)
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', dark)
+  }, [dark])
+
   return (
     <BrowserRouter>
       <Routes>
@@ -18,7 +25,7 @@ export default function App() {
           path="/"
           element={
             <ProtectedRoute>
-              <Home />
+              <Home dark={dark} setDark={setDark} />
             </ProtectedRoute>
           }
         />
