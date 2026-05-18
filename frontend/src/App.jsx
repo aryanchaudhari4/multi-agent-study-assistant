@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import Landing from './pages/Landing'
 import Login from './pages/Login'
 import Home from './pages/Home'
 import useUserStore from './store/userStore'
@@ -6,7 +7,7 @@ import { useState, useEffect } from 'react'
 
 function ProtectedRoute({ children }) {
   const { token } = useUserStore()
-  if (!token) return <Navigate to="/login" />
+  if (!token) return <Navigate to="/" />
   return children
 }
 
@@ -20,9 +21,10 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route
-          path="/"
+          path="/app"
           element={
             <ProtectedRoute>
               <Home dark={dark} setDark={setDark} />

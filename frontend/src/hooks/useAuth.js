@@ -24,7 +24,7 @@ export function useAuth() {
     const res = await axios.post(`${API}/auth/login`, form)
     setToken(res.data.access_token)
     setUser({ name: res.data.user_name, email })
-    navigate('/')
+    navigate('/app')
   }
 
   const logoutUser = () => {

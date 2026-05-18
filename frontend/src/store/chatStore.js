@@ -8,12 +8,12 @@ const useChatStore = create((set, get) => ({
     planner: [],
   },
 
-  addMessage: (agent, role, content) => {
+  addMessage: (agent, role, content, userName) => {
     const current = get().histories[agent] || []
     set({
       histories: {
         ...get().histories,
-        [agent]: [...current, { role, content }],
+        [agent]: [...current, { role, content, userName }],
       }
     })
   },

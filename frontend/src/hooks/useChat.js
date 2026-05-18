@@ -9,20 +9,19 @@ export function useChat(agent) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const { histories, addMessage } = useChatStore()
-  const { token } = useUserStore()
+  const { token, user } = useUserStore()
 
   const messages = histories[agent] || []
 
   const sendMessage = async (text) => {
     if (!text.trim()) return
-
-    addMessage(agent, 'user', text)
+    addMessage(agent, 'user', text, user?.name)
     setLoading(true)
     setError(null)
 
     try {
       const history = messages.map(m => ({
-        role: m.role,
+        role: m.role === 'assistant' ? 'assistant' : 'user',
         content: m.content
       }))
 
@@ -32,7 +31,7 @@ export function useChat(agent) {
         { headers: { Authorization: `Bearer ${token}` } }
       )
 
-      addMessage(agent, 'assistant', res.data.reply)
+      addMessage(agent, 'assistant', res.data.reply, 'AI')
     } catch (err) {
       setError('Something went wrong. Please try again.')
     } finally {

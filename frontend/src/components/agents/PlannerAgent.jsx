@@ -3,7 +3,7 @@ import ChatBubble from '../ui/ChatBubble'
 import InputBar from '../ui/InputBar'
 import { useRef, useEffect } from 'react'
 
-const chips = ['7-day plan for Physics exam', 'What should I study today?', 'Help me prepare for exams in 2 weeks', 'Create a revision schedule']
+const chips = ['7-day Physics plan', 'What to study today?', 'Exam in 2 weeks', 'Revision schedule', 'Daily study routine']
 
 export default function PlannerAgent({ dark }) {
   const { messages, sendMessage, loading, error } = useChat('planner')
@@ -14,52 +14,67 @@ export default function PlannerAgent({ dark }) {
   }, [messages])
 
   return (
-    <div className="flex flex-col h-full">
-      <div className={`px-6 py-4 border-b ${dark ? 'border-gray-800' : 'border-gray-200'}`}>
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-lg">📅</div>
-          <div>
-            <h2 className={`font-semibold ${dark ? 'text-white' : 'text-gray-900'}`}>Planner Agent</h2>
-            <p className={`text-xs ${dark ? 'text-gray-500' : 'text-gray-400'}`}>Builds study schedules and tracks progress</p>
-          </div>
-          <span className="ml-auto text-xs px-2.5 py-1 rounded-full bg-purple-500/20 text-purple-400 border border-purple-500/30">active</span>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+
+      <div style={{ padding: '14px 20px', borderBottom: dark ? '1px solid rgba(255,255,255,0.06)' : '1px solid #f0f0f0', display: 'flex', alignItems: 'center', gap: 12, background: dark ? '#0a0a0f' : 'white', flexShrink: 0 }}>
+        <div style={{ width: 40, height: 40, borderRadius: 12, background: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>📅</div>
+        <div>
+          <div style={{ fontWeight: 800, fontSize: 14, color: dark ? 'white' : '#111', letterSpacing: '-0.02em' }}>Planner Agent</div>
+          <div style={{ fontSize: 12, color: dark ? 'rgba(255,255,255,0.35)' : '#999' }}>Smart study schedules and progress tracking</div>
+        </div>
+        <div style={{ marginLeft: 'auto', fontSize: 11, fontWeight: 700, padding: '4px 12px', borderRadius: 100, background: 'rgba(168,85,247,0.08)', border: '1px solid rgba(168,85,247,0.2)', color: '#c084fc', display: 'flex', alignItems: 'center', gap: 5 }}>
+          <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#c084fc', boxShadow: '0 0 5px #c084fc', display: 'inline-block' }} />
+          active
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-6 py-4 flex flex-col gap-4">
+      <div style={{ flex: 1, overflowY: 'auto', padding: '20px', display: 'flex', flexDirection: 'column', gap: 16 }}>
         {messages.length === 0 && (
-          <div className="text-center mt-10">
-            <div className="text-4xl mb-3">📅</div>
-            <p className={`text-sm font-medium mb-1 ${dark ? 'text-gray-300' : 'text-gray-700'}`}>Planner Agent ready!</p>
-            <p className={`text-xs mb-4 ${dark ? 'text-gray-500' : 'text-gray-400'}`}>Tell me your goals and I'll build a study plan</p>
-            <div className="flex flex-wrap gap-2 justify-center">
-              {chips.map(chip => (
-                <button key={chip} onClick={() => sendMessage(chip)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-medium transition border ${dark ? 'bg-purple-500/10 text-purple-400 border-purple-500/30 hover:bg-purple-500/20' : 'bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100'}`}>
-                  {chip}
-                </button>
-              ))}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', padding: '20px' }}>
+            <div style={{ maxWidth: 520, width: '100%', textAlign: 'center', background: dark ? 'rgba(255,255,255,0.03)' : 'white', border: dark ? '1px solid rgba(255,255,255,0.08)' : '1px solid #ebebeb', borderRadius: 24, padding: '36px 32px', boxShadow: dark ? '0 20px 60px rgba(0,0,0,0.4)' : '0 8px 30px rgba(0,0,0,0.06)' }}>
+              <div style={{ fontSize: 48, marginBottom: 14 }}>📅</div>
+              <div style={{ fontWeight: 900, fontSize: 20, color: dark ? 'white' : '#111', letterSpacing: '-0.04em', marginBottom: 8 }}>Planner Agent</div>
+              <div style={{ fontSize: 14, color: dark ? 'rgba(255,255,255,0.4)' : '#999', marginBottom: 24, lineHeight: 1.6 }}>
+                Tell me your goals and exam dates — I'll build a smart, realistic study plan just for you.
+              </div>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 20 }}>
+                {chips.map(chip => (
+                  <button key={chip} onClick={() => sendMessage(chip)}
+                    style={{ padding: '8px 16px', borderRadius: 100, cursor: 'pointer', fontSize: 13, fontWeight: 600, background: 'rgba(168,85,247,0.08)', border: '1px solid rgba(168,85,247,0.2)', color: '#c084fc', transition: 'all 0.15s' }}
+                    onMouseEnter={e => { e.currentTarget.style.background = 'rgba(168,85,247,0.15)'; e.currentTarget.style.transform = 'translateY(-1px)' }}
+                    onMouseLeave={e => { e.currentTarget.style.background = 'rgba(168,85,247,0.08)'; e.currentTarget.style.transform = 'translateY(0)' }}>
+                    {chip}
+                  </button>
+                ))}
+              </div>
+              <div style={{ fontSize: 12, color: dark ? 'rgba(255,255,255,0.2)' : '#ccc' }}>or describe your study goals below ↓</div>
             </div>
           </div>
         )}
+
         {messages.map((msg, i) => (
-          <ChatBubble key={i} role={msg.role} content={msg.content} dark={dark} />
+          <ChatBubble key={i} role={msg.role} content={msg.content} dark={dark} userName={msg.userName} />
         ))}
+
         {loading && (
-          <div className="flex gap-2 items-center">
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs ${dark ? 'bg-gray-700' : 'bg-gray-100'}`}>AI</div>
-            <div className={`px-4 py-3 rounded-2xl rounded-tl-sm ${dark ? 'bg-gray-800 border border-gray-700' : 'bg-gray-100'}`}>
-              <div className="flex gap-1">
-                {[0,1,2].map(i => <div key={i} className={`w-2 h-2 rounded-full animate-bounce ${dark ? 'bg-gray-500' : 'bg-gray-400'}`} style={{animationDelay: `${i*0.15}s`}} />)}
+          <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+            <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'linear-gradient(135deg, #1e1b4b, #312e81)', border: '1px solid rgba(99,102,241,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 12px rgba(99,102,241,0.3)', flexShrink: 0 }}>
+              <svg width="14" height="14" viewBox="0 0 40 40" fill="none"><path d="M12 20C12 15.6 15.6 12 20 12C22.4 12 24.6 13 26.2 14.6L23.4 17.4C22.6 16.5 21.4 16 20 16C17.8 16 16 17.8 16 20C16 22.2 17.8 24 20 24C21.4 24 22.6 23.5 23.4 22.6L26.2 25.4C24.6 27 22.4 28 20 28C15.6 28 12 24.4 12 20Z" fill="white"/><path d="M24 20H28M28 20L26 18M28 20L26 22" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            </div>
+            <div style={{ padding: '12px 16px', borderRadius: '4px 16px 16px 16px', background: dark ? 'rgba(255,255,255,0.05)' : '#f4f4f5', border: dark ? '1px solid rgba(255,255,255,0.07)' : '1px solid #e4e4e7' }}>
+              <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+                {[0,1,2].map(i => <div key={i} style={{ width: 7, height: 7, borderRadius: '50%', background: dark ? 'rgba(255,255,255,0.3)' : '#ccc', animation: 'plannerBounce 1.2s infinite', animationDelay: `${i*0.15}s` }} />)}
               </div>
             </div>
           </div>
         )}
-        {error && <p className="text-red-400 text-sm text-center">{error}</p>}
+
+        {error && <div style={{ textAlign: 'center', fontSize: 13, color: '#f87171', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.15)', borderRadius: 10, padding: '10px 16px' }}>⚠️ {error}</div>}
         <div ref={bottomRef} />
       </div>
 
       <InputBar onSend={sendMessage} loading={loading} placeholder="Describe your study goals..." dark={dark} />
+      <style>{`@keyframes plannerBounce { 0%,80%,100%{transform:translateY(0);opacity:0.4} 40%{transform:translateY(-5px);opacity:1} }`}</style>
     </div>
   )
 }

@@ -18,12 +18,22 @@ export default function Home({ dark, setDark }) {
   }
 
   return (
-    <div className={`flex flex-col h-screen transition-colors duration-300 ${dark ? 'bg-gray-950' : 'bg-gray-50'}`}>
+    <div style={{
+      display: 'flex', flexDirection: 'column', height: '100vh',
+      background: dark ? '#05050a' : '#f8f8f8',
+      fontFamily: "'DM Sans', system-ui, sans-serif",
+    }}>
       <Header dark={dark} setDark={setDark} />
       <AgentTabs active={activeAgent} onChange={setActiveAgent} dark={dark} />
-      <div className="flex flex-1 min-h-0">
+      <div style={{ display: 'flex', flex: 1, minHeight: 0 }}>
         <Sidebar active={activeAgent} onChange={setActiveAgent} dark={dark} />
-        <main className={`flex-1 min-h-0 overflow-hidden transition-colors duration-300 ${dark ? 'bg-gray-950' : 'bg-white'}`}>
+        <main style={{
+          flex: 1, minHeight: 0, overflow: 'hidden',
+          display: 'flex', flexDirection: 'column',
+          background: dark
+            ? 'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99,102,241,0.08) 0%, transparent 60%)'
+            : 'white',
+        }}>
           {AGENTS[activeAgent]}
         </main>
       </div>
