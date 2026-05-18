@@ -13,6 +13,7 @@ from routes.auth import router as auth_router
 from routes.chat import router as chat_router
 from routes.notes import router as notes_router
 from routes.planner import router as planner_router
+from config import settings
 
 Base.metadata.create_all(bind=engine)
 
@@ -24,7 +25,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000"],
+    allow_origins=settings.allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

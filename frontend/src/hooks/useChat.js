@@ -2,8 +2,7 @@ import { useState } from 'react'
 import axios from 'axios'
 import useChatStore from '../store/chatStore'
 import useUserStore from '../store/userStore'
-
-const API = 'http://127.0.0.1:8000'
+import { API_URL } from '../lib/api'
 
 export function useChat(agent) {
   const [loading, setLoading] = useState(false)
@@ -26,7 +25,7 @@ export function useChat(agent) {
       }))
 
       const res = await axios.post(
-        `${API}/chat/`,
+        `${API_URL}/chat/`,
         { message: text, agent, history },
         { headers: { Authorization: `Bearer ${token}` } }
       )
