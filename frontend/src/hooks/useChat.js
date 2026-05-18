@@ -32,7 +32,7 @@ export function useChat(agent) {
       )
 
       addMessage(agent, 'assistant', res.data.reply, 'AI')
-    } catch (err) {
+    } catch {
       setError('Something went wrong. Please try again.')
     } finally {
       setLoading(false)
