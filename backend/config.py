@@ -12,11 +12,12 @@ class Settings(BaseSettings):
 
     @property
     def allowed_origins(self) -> list[str]:
-        return [
+        origins = [
             origin.strip()
             for origin in self.cors_origins.split(",")
             if origin.strip()
         ]
+        return origins
 
     class Config:
         env_file = ".env"
