@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     secret_key: str
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 10080
-    model: str = "gemini-2.0-flash-lite"
+    model: str = "gemini-3.5-flash-lite"
     max_tokens: int = 1000
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000"
 
