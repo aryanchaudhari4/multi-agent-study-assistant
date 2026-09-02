@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
 from pydantic import BaseModel
+from sqlalchemy.orm import Session
 from db.database import get_db
 from models.note import Note
 from routes.auth import get_current_user
@@ -14,16 +14,14 @@ class NoteCreate(BaseModel):
     subject: str = "General"
 
 @router.get("/")
-def get_notes(subject: str = None, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
-    q = db.query(Note).filter(Note.user_id == user.id)
-    if subject:
-        q = q.filter(Note.subject == subject)
-    return q.order_by(Note.created_at.desc()).all()
+def get_notes(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    notes = db.query(Note).filter(Note.user_id == current_user.id).all()
+    return [{"id": n.id, "title": n.title, "content": n.content, "subject": n.subject} for n in notes]
 
 @router.post("/", status_code=201)
-def create_note(req: NoteCreate, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+def create_note(req: NoteCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     note = Note(
-        user_id=user.id,
+        user_id=current_user.id,
         title=req.title,
         content=req.content,
         subject=req.subject
@@ -31,13 +29,31 @@ def create_note(req: NoteCreate, db: Session = Depends(get_db), user: User = Dep
     db.add(note)
     db.commit()
     db.refresh(note)
-    return note
+    return {"id": note.id, "message": "Note created successfully"}
+
+@router.get("/{note_id}")
+def get_note(note_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    note = db.query(Note).filter(Note.id == note_id, Note.user_id == current_user.id).first()
+    if not note:
+        raise HTTPException(404, "Note not found")
+    return {"id": note.id, "title": note.title, "content": note.content, "subject": note.subject}
+
+@router.put("/{note_id}")
+def update_note(note_id: int, req: NoteCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    note = db.query(Note).filter(Note.id == note_id, Note.user_id == current_user.id).first()
+    if not note:
+        raise HTTPException(404, "Note not found")
+    note.title = req.title
+    note.content = req.content
+    note.subject = req.subject
+    db.commit()
+    return {"message": "Note updated successfully"}
 
 @router.delete("/{note_id}")
-def delete_note(note_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
-    note = db.query(Note).filter(Note.id == note_id, Note.user_id == user.id).first()
+def delete_note(note_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    note = db.query(Note).filter(Note.id == note_id, Note.user_id == current_user.id).first()
     if not note:
         raise HTTPException(404, "Note not found")
     db.delete(note)
     db.commit()
-    return {"message": "Deleted"}
+    return {"message": "Note deleted successfully"}

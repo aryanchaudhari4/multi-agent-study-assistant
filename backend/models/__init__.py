@@ -1,4 +1,7 @@
-from models.user import User
-from models.note import Note
-from models.quiz import QuizSession
-from models.plan import Plan
+# Models module
+from .user import User
+from .note import Note
+from .quiz import QuizSession
+from .plan import Plan
+
+__all__ = ["User", "Note", "QuizSession", "Plan"]

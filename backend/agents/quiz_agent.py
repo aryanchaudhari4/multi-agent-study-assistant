@@ -1,28 +1,35 @@
-from openai import OpenAI
+import google.generativeai as genai
 from config import settings
 
-client = OpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=settings.gemini_api_key,
-)
+genai.configure(api_key=settings.gemini_api_key)
 
-SYSTEM_PROMPT = """You are a Quiz Agent — you generate educational quiz questions for students.
-- For MCQs always use this exact format:
-  Q: [question]
-  A) [option]  B) [option]  C) [option]  D) [option]
-  Answer: [letter]
-  Explanation: [brief explanation]
-- Generate 1-3 questions per response
-- After the student answers, give feedback"""
+async def chat(history: list[dict], message: str) -> str:
+    """
+    Quiz Agent: Generates practice questions, MCQs, and assessments.
+    """
+    model = genai.GenerativeModel(settings.model)
+    
+    system_prompt = """You are a Quiz Agent for a study assistant app. Your role is to:
+1. Generate multiple-choice questions (MCQs)
+2. Create practice tests on topics
+3. Provide difficulty levels (Easy, Medium, Hard)
+4. Explain why answers are correct or incorrect
+5. Suggest practice areas based on performance
 
-async def chat(messages: list, user_message: str) -> str:
-    all_messages = [{"role": "system", "content": SYSTEM_PROMPT}]
-    for msg in messages:
-        all_messages.append({"role": msg["role"], "content": msg["content"]})
-    all_messages.append({"role": "user", "content": user_message})
-    response = client.chat.completions.create(
-        model="openrouter/auto",
-        messages=all_messages,
-        max_tokens=1000
+When generating questions, include:
+- Question stem
+- 4 options (A, B, C, D)
+- Correct answer
+- Explanation
+- Difficulty level
+
+Make questions clear, unambiguous, and educationally valuable."""
+
+    response = model.generate_content(
+        contents=message,
+        generation_config=genai.types.GenerationConfig(
+            max_output_tokens=settings.max_tokens,
+        )
     )
-    return response.choices[0].message.content
+    
+    return response.text
